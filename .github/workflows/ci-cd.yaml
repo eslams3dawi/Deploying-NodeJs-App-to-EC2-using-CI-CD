@@ -1,0 +1,43 @@
+# Define workflow name
+name: HTTP App Workflow
+
+# Define Event & triggered branches
+on:
+  push: 
+    branches:
+      - main
+      - master
+      - "feature/**" # Can use regular expressions
+
+  # pull_request: 
+  #   branches:
+  #     - main
+
+  # Define Tasks/Jobs
+  jobs:
+    test_and_build: # Name of job should be descriptive
+      runs-on: ubuntu-latest # Define the runner (Virtual Machine) that will host the application
+
+      steps: # Define the steps of build and test
+        - name: clone code # Clone the code on the VM to build
+          uses: actions/checkout@v5 
+
+        - name: set up node js environment
+          uses: actions/setup-node@v7 # Setup the node js run-time env with the specified version from the github actions marketplace
+          with: 
+            node-verion: 24 # node --version → v24.18.0
+
+        - name: install node js packages
+          run: npm install
+
+        # - name: run tests
+        # - run: npm run test # Uses the test files
+
+        - name: build source code
+          run: npm run build
+
+
+
+
+
+        
