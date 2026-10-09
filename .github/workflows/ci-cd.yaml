@@ -36,8 +36,44 @@ jobs:
       - name: build source code
         run: npm run build
 
+      - name: upload artifacts # Upload the compiled files and dependencies
+        uses: action/upload-artifact@v4
+        with:
+          - name: source-code
+            path: | # Pipeline symbol for multiple values 
+              dist # Has the compiled files
+              package.json # Has the dependencies
 
 
+  deploy: # Deploy to AWS EC2
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: download artifacts # Download the compiled files and dependencies on the VM to deploy
+        uses: actions/download-artifact@v4
+        with: 
+          name: source-code
+          path: ./ # Download the artifacts to the root directory of the VM
+
+  # Transfer the files to the EC2 instance using SSH and Rsync
+      - name: Deploy to Staging server
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i"
+          SOURCE: "dist/ package.json" # Source directory on the VM that will be transferred to the EC2 instance
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }} # IP address of the EC2 instance that will host the application
+          REMOTE_USER: ${{ secrets.REMOTE_USER }} # Username of the EC2 instance that will host the application
+          TARGET: ${{ secrets.REMOTE_TARGET }} # Target directory on the EC2 instance that will host the application
+          EXCLUDE: "/dist/, /node_modules/"
+          SCRIPT_BEFORE: |
+            whoami
+            ls -al
+          SCRIPT_AFTER: |
+            whoami
+            ls -al
+            echo $RSYNC_STDOUT
+  # All credintials are stored in the secrets of the repository. The secrets are encrypted and can be used in the workflow without exposing them in the code.
 
 
         
