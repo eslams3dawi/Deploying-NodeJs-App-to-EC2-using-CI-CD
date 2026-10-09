@@ -41,8 +41,8 @@ jobs:
         with:
           name: source-code
           path: | # Pipeline symbol for multiple values 
-            dist/ # Has the compiled files
-            package.json # Has the dependencies
+            dist/
+            package.json
           if-no-files-found: error
 
 
