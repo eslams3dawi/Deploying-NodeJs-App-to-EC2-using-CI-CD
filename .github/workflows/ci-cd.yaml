@@ -37,12 +37,12 @@ jobs:
         run: npm run build
 
       - name: upload artifacts # Upload the compiled files and dependencies
-        uses: action/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
-          - name: source-code
-            path: | # Pipeline symbol for multiple values 
-              dist # Has the compiled files
-              package.json # Has the dependencies
+          name: source-code
+          path: | # Pipeline symbol for multiple values 
+            dist # Has the compiled files
+            package.json # Has the dependencies
 
 
   deploy: # Deploy to AWS EC2
@@ -66,11 +66,11 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }} # IP address of the EC2 instance that will host the application
           REMOTE_USER: ${{ secrets.REMOTE_USER }} # Username of the EC2 instance that will host the application
           TARGET: ${{ secrets.REMOTE_TARGET }} # Target directory on the EC2 instance that will host the application
-          EXCLUDE: "/dist/, /node_modules/"
-          SCRIPT_BEFORE: |
+          # EXCLUDE: "/dist/, /node_modules/"
+          SCRIPT_BEFORE: | # Commands to run before deployment
             whoami
             ls -al
-          SCRIPT_AFTER: |
+          SCRIPT_AFTER: | # Commands to run after deployment
             whoami
             ls -al
             echo $RSYNC_STDOUT
