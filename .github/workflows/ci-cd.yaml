@@ -41,14 +41,14 @@ jobs:
         with:
           name: source-code
           path: | # Pipeline symbol for multiple values 
-            dist # Has the compiled files
+            dist/ # Has the compiled files
             package.json # Has the dependencies
+          if-no-files-found: error
 
 
   deploy: # Deploy to AWS EC2
     runs-on: ubuntu-latest 
     needs: test_and_build # This job will run after the test_and_build job is completed successfully to ensure that the compiled files and dependencies are available for deployment
-
     steps:
       - name: download artifacts # Download the compiled files and dependencies on the VM to deploy
         uses: actions/download-artifact@v4
@@ -71,9 +71,8 @@ jobs:
             whoami
             ls -al
           SCRIPT_AFTER: | # Commands to run after deployment
-            whoami
-            ls -al
-            echo $RSYNC_STDOUT
+            cd ${{ secrets.REMOTE_TARGET }}
+            pm2 restart http-app || pm2 start npm --name http-app -- start
   # All credintials are stored in the secrets of the repository. The secrets are encrypted and can be used in the workflow without exposing them in the code.
 
 
