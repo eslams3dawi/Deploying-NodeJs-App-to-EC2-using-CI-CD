@@ -63,7 +63,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i"
           SOURCE: "dist/ package.json" # Source directory on the VM that will be transferred to the EC2 instance
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }} # IP address of the EC2 instance that will host the application
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }} # IP address of the EC2 instance that will host the application & this ip changes every time the EC2 instance is restarted, so it is recommended to use a static IP address or an Elastic IP address for the EC2 instance
           REMOTE_USER: ${{ secrets.REMOTE_USER }} # Username of the EC2 instance that will host the application
           TARGET: ${{ secrets.REMOTE_TARGET }} # Target directory on the EC2 instance that will host the application
           # EXCLUDE: "/dist/, /node_modules/"
