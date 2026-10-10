@@ -72,8 +72,7 @@ jobs:
             ls -al
           SCRIPT_AFTER: | # Commands to run after deployment
             cd ${{ secrets.REMOTE_TARGET }} 
-            pm2 restart http-app || pm2 start app.js --name http-app 
-            pm2 save
+            pm2 restart http-app || pm2 start npm --name http-app -- start
         # Restart the app if it's running, otherwise start it in the background using PM2
   # All credintials are stored in the secrets of the repository. The secrets are encrypted and can be used in the workflow without exposing them in the code.
 
